@@ -1,4 +1,4 @@
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
 
 const observer: Observer<any> = {
   next: value => console.log('[next]:', value),
@@ -6,36 +6,26 @@ const observer: Observer<any> = {
   complete: () => console.info('[completado]')
 };
 
-const intervalo$ = new Observable<number>(subscriber => {
-  let contador = 1;
-  // Creando contador.
-  const intervalo = setInterval(() => {
-    // cada segundo
-    subscriber.next(contador);
-    console.log(contador);
-    contador++;
-  }, 1000);
+const intervalo$ = new Observable<number>(subs => {
+  const intervalID = setInterval(() => subs.next(Math.random()), 1000);
 
-  setTimeout(() => {
-    subscriber.complete();
-  }, 2500);
-  /* Este pedazo se ejecuta cuando se invoca un unsuscribe */
-  return () => {
-    clearInterval(intervalo);
-    console.log('Intervalo destruido');
-  };
+  return () => clearInterval(intervalID); 
 });
 
-const suscripcion2 = intervalo$.subscribe(observer);
-const suscripcion3 = intervalo$.subscribe(observer);
-const suscripcion1 = intervalo$.subscribe(observer);
+/**
+ * Características del subject
+ * 1 - Casteo múltiple. Muchas suscripciones van a estar sujetas a este mismo subject y va a servirme
+ *                      para distribuir la misma información a todos los lugares a donde estén suscritos o
+ *                      a todos los lugares que les interese ese valor.
+ * 2 - También es un Observer. 
+ * 3 - Next, error y complete.
+ */
+const subject$ = new Subject();
+intervalo$.subscribe( subject$ );
 
-// con esto, al desuscribir suscripcion1, se desinscriben los demas
-suscripcion1.add( suscripcion2 ).add( suscripcion3);
 
-setTimeout(() => {
-  suscripcion1.unsubscribe();
- /* suscripcion2.unsubscribe();
-  suscripcion3.unsubscribe();*/
-  console.log('Completado timeout');
-}, 6000);
+// const subs1 = intervalo$.subscribe( rnd => console.log('subs1', rnd) );
+// const subs2 = intervalo$.subscribe( rnd => console.log('subs2', rnd) );
+
+const subs1 = subject$.subscribe( rnd => console.log('subs1', rnd) );
+const subs2 = subject$.subscribe( rnd => console.log('subs2', rnd) );
