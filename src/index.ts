@@ -1,5 +1,5 @@
 import { range, fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 
 /* range(1,5).pipe(
    // map( x => x*10 )
@@ -9,7 +9,16 @@ import { map } from 'rxjs/operators';
 
 const keyup$ = fromEvent<KeyboardEvent>(document, 'keyup');
 
-keyup$.pipe(
+const keyupCode$ = keyup$.pipe(
     map( e => e.code )
-)
-.subscribe( console.log ) ;
+);
+
+// Aquí tengo que saber exactamente el nombre de la propiedad recibida
+const keyupPluck$ = keyup$.pipe(
+    pluck('target', 'baseURI')
+);
+
+keyup$.subscribe(console.log);
+keyupCode$.subscribe( code =>  console.log('map', code) ) ;
+
+keyupPluck$.subscribe( code => console.log('pluck', code) ) ;
