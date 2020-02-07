@@ -1,29 +1,37 @@
-import { range, fromEvent } from 'rxjs';
-import { map, pluck, mapTo } from 'rxjs/operators';
+import { range, from } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
-/* range(1,5).pipe(
-   // map( x => x*10 )
-   // map< tipo de dato que recibe en funcion flecha, tipo de dato a retornar> 
-   map<number, string>( val => (val * 10).toString() )
+/* range(1,10).pipe(
+    filter(  val => val % 2 === 1 )
 ).subscribe(console.log); */
+/*
+range(20, 30).pipe(
+    filter( (val, i) => {
+        console.log('index ', i);
+        return val % 2 === 1;
+    })
+).subscribe(console.log);*/
 
-const keyup$ = fromEvent<KeyboardEvent>(document, 'keyup');
+interface Personaje {
+    tipo: string;
+    nombre: string;
+};
 
-const keyupCode$ = keyup$.pipe(
-    map( e => e.code )
-);
+const personajes: Personaje[] = [
+    {
+        tipo: 'heroe',
+        nombre: 'batman'
+    },
+    {
+        tipo: 'heroe',
+        nombre: 'robin'
+    },
+    {
+        tipo: 'villano',
+        nombre: 'joker'
+    }
+];
 
-// Aquí tengo que saber exactamente el nombre de la propiedad recibida
-const keyupPluck$ = keyup$.pipe(
-    pluck('target', 'baseURI')
-);
-
-const keyupMapTo$ = keyup$.pipe(
-    mapTo('tecla presionada')
-);
-
-keyup$.subscribe(console.log);
-keyupCode$.subscribe( code =>  console.log('map', code) ) ;
-
-keyupPluck$.subscribe( code => console.log('pluck', code) ) ;
-keyupMapTo$.subscribe( code => console.log('mapTo', code) ) ;
+from(personajes).pipe(
+    filter(  p => p.tipo === 'heroe')
+).subscribe(console.log); 
