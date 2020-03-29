@@ -1,7 +1,7 @@
 /* ejecicio con operador distinctUntilChanged */
 
 import { of, from } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilKeyChanged } from 'rxjs/operators';
 
 interface Personaje {
     nombre: string;
@@ -46,5 +46,5 @@ const personajes: Personaje[] = [
 
 // con interfaces y clases se necesita proporcionar al distinct el predicado
 from(personajes).pipe(
-    distinctUntilChanged( (anterior,actual) => anterior.nombre === actual.nombre)
+    distinctUntilKeyChanged( 'nombre')
     ).subscribe(console.log);
