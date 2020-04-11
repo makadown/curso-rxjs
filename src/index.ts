@@ -1,50 +1,21 @@
-/* ejecicio con operador distinctUntilChanged */
+/* *Ejercicio con debounceTime */
 
-import { of, from } from 'rxjs';
-import { distinctUntilKeyChanged } from 'rxjs/operators';
+import { debounceTime, pluck, distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
 
-interface Personaje {
-    nombre: string;
-}
+const click$ = fromEvent(document, 'click');
+click$.pipe(
+    debounceTime(3000)
+); // .subscribe(console.log);
 
-const personajes: Personaje[] = [
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'X'
-    },
-    {
-        nombre: 'Zero'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Dr Wily'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'Zero'
-    },
-];
+// ejemplo 2 
+const input = document.createElement('input');
+document.querySelector('body').append(input);
 
+const input$ = fromEvent(input, 'keyup');
 
-// con interfaces y clases se necesita proporcionar al distinct el predicado
-from(personajes).pipe(
-    distinctUntilKeyChanged( 'nombre')
-    ).subscribe(console.log);
+input$.pipe(
+    debounceTime(1000),
+    pluck('target','value'), /* tomo propiedad target.value */
+    distinctUntilChanged() /* que no emita el mismo string */
+).subscribe(console.log);
