@@ -64,7 +64,7 @@ import { zip, of, Subject } from 'rxjs';
 
 
     /******************************************************/
-    /****************** solucion 2 ************************/
+    /****************** Mi solucion 2 ************************/
     const solucionHard = [];
     const getLukeHard = getRequest(`${SW_API}/people/1/`);
     getLukeHard.pipe(
@@ -76,7 +76,7 @@ import { zip, of, Subject } from 'rxjs';
             solucionHard.unshift({especie: resp});
             return solucionHard;
         })).subscribe( console.log );
-    /****************** solucion 2 ************************/
+    /****************** Mi solucion 2 ************************/
     /******************************************************/
 
 
